@@ -1,0 +1,7 @@
+.content{
+    display: flex;
+    flex-wrap: wrap;
+    padding: 7%;
+    padding-top: 0%;
+    margin-left: 4%;
+}
