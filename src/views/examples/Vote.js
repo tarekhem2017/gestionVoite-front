@@ -86,7 +86,7 @@ const Vote = (props) => {
                 }
                 <div style={{ marginTop: "4%", marginLeft: "35%" }}>
                     <ReCAPTCHA
-                        sitekey="6LfNviweAAAAAKqhjuAa0BKbQqNSAQaWiilODTb3"
+                        sitekey="6LfBty4eAAAAAA7iPQZvmkOE29wvqloYjOD1_qxp"
                         onChange={onChange}
                     />,
                 </div>
