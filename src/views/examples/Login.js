@@ -155,7 +155,9 @@ const Login = (props) => {
               </FormGroup>
               <text onClick={() => props.history.replace(`/auth/signup`)} style={{ marginLeft: "50%", textDecorationLine: "underline" }}>Vous n'avez pas un compte?</text>
               <div className="text-center">
-        
+                <Button style={{ width: 200, marginBottom: 30 }} onClick={() => LoginAccount()} className="mt-4" color="primary" type="button">
+                  Login
+                </Button>
               </div>
             </Form>
             {msg != "" && <text style={{ color: "red", paddingTop: 50 }}> {msg}</text>}
