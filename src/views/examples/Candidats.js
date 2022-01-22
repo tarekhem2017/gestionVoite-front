@@ -40,9 +40,6 @@ const Candidats = (props) => {
   }
 
   useEffect(() => {
-    ws.onopen = () => {
-      console.log('WebSocket Connected');
-    }
     getCandidats()
     ws.onmessage = (e) => {
       const message = JSON.parse(e.data);

@@ -40,9 +40,6 @@ const Tables = (props) => {
   }
 
   useEffect(() => {
-    ws.onopen = () => {
-      console.log('WebSocket Connected');
-    }
     getElecteures()
     ws.onmessage = (e) => {
       const message = JSON.parse(e.data);

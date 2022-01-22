@@ -319,7 +319,7 @@ let chartExample1 = {
           ticks: {
             callback: function (value) {
               if (!(value % 10)) {
-                return  value + "k";
+                return  value/10+" Users";
               }
             },
           },
@@ -345,7 +345,7 @@ let chartExample1 = {
   },
   data1: (canvas) => {
     return {
-      labels: ["08:00", "10:00", "12:00", "14:00", "16:00", "18:00", "20:00", "22:00"],
+      labels: ["0:00", "10:00", "12:00", "14:00", "16:00", "18:00", "20:00", "22:00"],
       datasets: [
         {
           label: "Performance",

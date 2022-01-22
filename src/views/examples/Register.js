@@ -15,7 +15,10 @@ import {
   Col,
 } from "reactstrap";
 import { SingnupElecteur, SignupCandidat } from "../../services/apis"
+const URL = 'ws://127.0.0.1:9000';
+
 const Register = (props) => {
+  const [ws, setWs] = useState(new WebSocket(URL));
   const [email, setEmail] = useState("")
   const [nom, setNom] = useState("")
   const [prenom, setPrenom] = useState("")
@@ -32,7 +35,7 @@ const Register = (props) => {
       setMsg("Veuillez remplir les champs obligatoires")
       return;
     }
-    else if (cin.length != "") {
+    else if (cin.length != 8) {
       setMsg("Cin doit étre compose de 8 chiffre")
       return;
     }
@@ -58,6 +61,7 @@ const Register = (props) => {
           }
           else {
             props.history.replace(`/auth/login`)
+            ws.send("test");
           }
         })
         .catch(err => {
@@ -89,14 +93,15 @@ const Register = (props) => {
       SingnupElecteur(user)
         .then(data => {
           if (data.data == "Cin is already taken!") {
-            setMsg("Le cin est deja insrit!")
+            setMsg("Le cin est deja inscrit!")
           } else if (data == "Username is already taken!") {
-            setMsg("Nom utilisateur est deja insrit!")
+            setMsg("Nom utilisateur est deja inscrit!")
           } else if (data == "Email is already taken!") {
-            setMsg("Email est deja insrit!")
+            setMsg("Email est deja inscrit!")
           }
           else {
             props.history.replace(`/auth/login`)
+            ws.send("test");
           }
         })
         .catch(err => {

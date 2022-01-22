@@ -17,9 +17,31 @@
 */
 
 // reactstrap components
+import React, { useState,useEffect } from 'react';
 import { Card, CardBody, CardTitle, Container, Row, Col } from "reactstrap";
+import { getStatistique } from "../../services/apis";
+const URL = 'ws://127.0.0.1:9000';
 
 const Header = () => {
+  const [stat,setStat]=useState(null)
+  const [ws, setWs] = useState(new WebSocket(URL));
+
+  useEffect(() => {
+    Statistique()
+  }, [])
+  ws.onmessage = (e) => {
+    Statistique()
+  }
+  function Statistique() {
+    getStatistique()
+      .then(data => {
+        console.log({ data })
+        setStat(data.data)
+      })
+      .catch(err => {
+        console.log({ err })
+      })
+  }
   return (
     <>
       <div className="header bg-gradient-info pb-8 pt-5 pt-md-8">
@@ -36,10 +58,10 @@ const Header = () => {
                           tag="h5"
                           className="text-uppercase text-muted mb-0"
                         >
-                          Nombre candidats
+                          Nb d'utilisateurs
                         </CardTitle>
                         <span className="h2 font-weight-bold mb-0">
-                          27
+                          {stat &&stat.nombreTotal}
                         </span>
                       </div>
                       <Col className="col-auto">
@@ -50,7 +72,6 @@ const Header = () => {
                     </Row>
                     <p className="mt-3 mb-0 text-muted text-sm">
                       <span className="text-success mr-2">
-                        <i className="fa fa-arrow-up" /> 3.48%
                       </span>{" "}
                     </p>
                   </CardBody>
@@ -67,7 +88,7 @@ const Header = () => {
                         >
                           Nombre électeurs
                         </CardTitle>
-                        <span className="h2 font-weight-bold mb-0">2,356</span>
+                        <span className="h2 font-weight-bold mb-0">{stat&&stat.nombreElecteur}</span>
                       </div>
                       <Col className="col-auto">
                         <div className="icon icon-shape bg-warning text-white rounded-circle shadow">
@@ -77,7 +98,6 @@ const Header = () => {
                     </Row>
                     <p className="mt-3 mb-0 text-muted text-sm">
                       <span className="text-danger mr-2">
-                        <i className="fas fa-arrow-down" /> 3.48%
                       </span>{" "}
                     </p>
                   </CardBody>
@@ -92,9 +112,9 @@ const Header = () => {
                           tag="h5"
                           className="text-uppercase text-muted mb-0"
                         >
-                          Nombre d'électeurs
+                          Nombre Candidats
                         </CardTitle>
-                        <span className="h2 font-weight-bold mb-0">924</span>
+                        <span className="h2 font-weight-bold mb-0">{stat&&stat.nombreCandidat}</span>
                       </div>
                       <Col className="col-auto">
                         <div className="icon icon-shape bg-yellow text-white rounded-circle shadow">
@@ -104,7 +124,6 @@ const Header = () => {
                     </Row>
                     <p className="mt-3 mb-0 text-muted text-sm">
                       <span className="text-warning mr-2">
-                        <i className="fas fa-arrow-down" /> 1.10%
                       </span>{" "}
                     </p>
                   </CardBody>
@@ -119,9 +138,9 @@ const Header = () => {
                           tag="h5"
                           className="text-uppercase text-muted mb-0"
                         >
-                          Avancement de votée
+                          Voté
                         </CardTitle>
-                        <span className="h2 font-weight-bold mb-0">49,65%</span>
+                        <span className="h2 font-weight-bold mb-0">{stat&&stat.nombreVote}</span>
                       </div>
                       <Col className="col-auto">
                         <div className="icon icon-shape bg-info text-white rounded-circle shadow">
@@ -131,7 +150,6 @@ const Header = () => {
                     </Row>
                     <p className="mt-3 mb-0 text-muted text-sm">
                       <span className="text-success mr-2">
-                        <i className="fas fa-arrow-up" /> 12%
                       </span>{" "}
                     </p>
                   </CardBody>

@@ -1,22 +1,4 @@
-/*!
-
-=========================================================
-* Argon Dashboard React - v1.2.1
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/argon-dashboard-react
-* Copyright 2021 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
-
-// reactstrap components
+import OneSignal from 'react-onesignal';
 import { useEffect, useState } from "react";
 import {
   Button,
@@ -32,30 +14,78 @@ import {
   Row,
   Col,
 } from "reactstrap";
-import { login } from "../../services/apis"
+import { getCandidatById, getElecteurById, getIdUser, login } from "../../services/apis"
 let token = "token"
+let user = "user"
+let isVoted = "isVoted"
+let id = "id"
+
+const URL = 'ws://127.0.0.1:9000';
+
 const Login = (props) => {
   const [userName, setUserName] = useState("")
   const [password, setPassword] = useState("")
   const [msg, setMsg] = useState("")
   const [tok, setTok] = useState(null)
+  const [initialized, setInitialized] = useState(false);
+  const [messages, setMessages] = useState([]);
 
-  useEffect(()=>{
+  useEffect(() => {
     getToken()
-    if (token != null) {
-      props.history.replace(`/admin/Dashboard`)
-    }
   })
   async function getToken() {
     try {
       const value = await localStorage.getItem(token);
       if (value !== null) {
         // We have data!
+        props.history.replace(`/admin/Dashboard`)
         setTok(value)
       }
     } catch (error) {
       // Error retrieving data
     }
+  }
+  function getElecteur(idS) {
+    getElecteurById(idS)
+      .then(res => {
+        let inf=res.data
+        localStorage.setItem(id, inf.id)
+        localStorage.setItem(isVoted,inf.isVoted)
+        props.history.replace(`/admin/Dashboard`)
+      })
+      .catch(err => {
+        console.log({ err })
+      })
+  }
+  function getCandidat(idS) {
+    getCandidatById(idS)
+      .then(res => {
+        let inf=res.data
+        localStorage.setItem(id, JSON.stringify(inf.id))
+        localStorage.setItem(isVoted, JSON.stringify(inf.isVoted))
+        props.history.replace(`/admin/Dashboard`)
+      })
+      .catch(err => {
+        console.log({ err })
+      })
+  }
+  function getId() {
+    getIdUser(userName)
+      .then(res => {
+        localStorage.setItem(user, JSON.stringify(res.data))
+        if (res.data.roles[0].name == "CANDIDAT") {
+          getCandidat(res.data.id)
+        }
+        else if (res.data.roles[0].name == "ELECTEUR") {
+          getElecteur(res.data.id)
+        }
+        else {
+          props.history.replace(`/admin/Dashboard`)
+        }
+      })
+      .catch(err => {
+        console.log({ err })
+      })
   }
   function LoginAccount() {
     if (password == "") {
@@ -74,14 +104,16 @@ const Login = (props) => {
       console.log({ user })
       login(user)
         .then(res => {
-          console.log({ res })
+          getId()
           if (res.status == 200) {
             localStorage.setItem(token, res.data.tokenType + " " + res.data.accessToken)
-            props.history.replace(`/admin/Dashboard`)
+            getId()
+          } else {
+            setMsg("Email ou mot de passe incorrect")
           }
         })
         .catch(err => {
-          console.log({ err })
+          setMsg("Email ou mot de passe incorrect")
         })
     }
   }

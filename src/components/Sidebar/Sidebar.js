@@ -16,7 +16,6 @@
 
 */
 /*eslint-disable*/
-import { useState } from "react";
 import { NavLink as NavLinkRRD, Link } from "react-router-dom";
 // nodejs library to set properties for components
 import { PropTypes } from "prop-types";
@@ -51,16 +50,23 @@ import {
   Row,
   Col,
 } from "reactstrap";
+import React, { useState,useEffect } from 'react';
 
 var ps;
+let user = "user"
+let isVoted = "isVoted"
 
 const Sidebar = (props) => {
   const [collapseOpen, setCollapseOpen] = useState();
-  // verifies if routeName is the one active (in browser input)
-  const activeRoute = (routeName) => {
-    return props.location.pathname.indexOf(routeName) > -1 ? "active" : "";
-  };
-  // toggles collapse between opened and closed (true/false)
+  const [currentUser, setUser] = useState(null)
+  const [infoUser, setInfoUser] = useState(null)
+  useEffect(() => {
+    let usr = localStorage.getItem(user)
+    let voted = localStorage.getItem(isVoted)
+    setUser(JSON.parse(usr))
+    setInfoUser(voted)
+  }, [])
+  console.log({ infoUser })
   const toggleCollapse = () => {
     setCollapseOpen((data) => !data);
   };
@@ -68,27 +74,65 @@ const Sidebar = (props) => {
   const closeCollapse = () => {
     setCollapseOpen(false);
   };
-  // creates the links that appear in the left menu / Sidebar
+
+  console.log({ currentUser })
   const createLinks = (routes) => {
     return routes.map((prop, key) => {
-      if(prop.name!="Login"){
-        return (
-          <NavItem key={key}>
-            <NavLink
-              to={prop.layout + prop.path}
-              tag={NavLinkRRD}
-              onClick={closeCollapse}
-              activeClassName="active"
-            >
-              <i className={prop.icon} />
-              {prop.name}
-            </NavLink>
-          </NavItem>
-        );
+      if (prop.name != "Login" && prop.name != "Sgnup") {
+        if (currentUser && currentUser.roles[0].name != "ADMIN") {
+          if (infoUser&&infoUser == 0) {
+            if (prop.name == "Vote" || prop.name == "Dashboard") {
+              return (
+                <NavItem key={key}>
+                  <NavLink
+                    to={prop.layout + prop.path}
+                    tag={NavLinkRRD}
+                    onClick={closeCollapse}
+                    activeClassName="active"
+                  >
+                    <i className={prop.icon} />
+                    {prop.name}
+                  </NavLink>
+                </NavItem>
+              );
+            }
+          } else {
+            if (prop.name == "Dashboard") {
+              return (
+                <NavItem key={key}>
+                  <NavLink
+                    to={prop.layout + prop.path}
+                    tag={NavLinkRRD}
+                    onClick={closeCollapse}
+                    activeClassName="active"
+                  >
+                    <i className={prop.icon} />
+                    {prop.name}
+                  </NavLink>
+                </NavItem>
+              );
+            }
+          }
+        }
+        else if(prop.name!="Vote") {
+          return (
+            <NavItem key={key}>
+              <NavLink
+                to={prop.layout + prop.path}
+                tag={NavLinkRRD}
+                onClick={closeCollapse}
+                activeClassName="active"
+              >
+                <i className={prop.icon} />
+                {prop.name}
+              </NavLink>
+            </NavItem>
+          );
+        }
       }
+
     });
   };
-
   const { bgColor, routes, logo } = props;
   let navbarBrandProps;
   if (logo && logo.innerLink) {
@@ -102,7 +146,7 @@ const Sidebar = (props) => {
       target: "_blank",
     };
   }
-
+  console.log({isVoted})
   return (
     <Navbar
       className="navbar-vertical fixed-left navbar-light bg-white"
@@ -125,7 +169,7 @@ const Sidebar = (props) => {
               alt={logo.imgAlt}
               className="navbar-brand-img"
               src={LogoFIle}
-              style={{width:150}}
+              style={{ width: 150 }}
             />
           </NavbarBrand>
         ) : null}
@@ -181,9 +225,9 @@ const Sidebar = (props) => {
                 <span>Support</span>
               </DropdownItem>
               <DropdownItem divider />
-              <DropdownItem href="#pablo" onClick={(e) => e.preventDefault()}>
+              <DropdownItem href="#pablo" onClick={(e) => alert("ss")}>
                 <i className="ni ni-user-run" />
-                <span>Logout</span>
+                <span onClick={() => alert("s")}>Logout</span>
               </DropdownItem>
             </DropdownMenu>
           </UncontrolledDropdown>
@@ -239,7 +283,7 @@ const Sidebar = (props) => {
           {/* Divider */}
           <hr className="my-3" />
           {/* Heading */}
-         
+
         </Collapse>
       </Container>
     </Navbar>
