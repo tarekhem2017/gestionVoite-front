@@ -1,4 +1,3 @@
-import OneSignal from 'react-onesignal';
 import { useEffect, useState } from "react";
 import {
   Button,
@@ -156,7 +155,7 @@ const Login = (props) => {
               <text onClick={() => props.history.replace(`/auth/signup`)} style={{ marginLeft: "50%", textDecorationLine: "underline" }}>Vous n'avez pas un compte?</text>
               <div className="text-center">
                 <Button style={{ width: 200, marginBottom: 30 }} onClick={() => LoginAccount()} className="mt-4" color="primary" type="button">
-                  Login
+                  Loginn
                 </Button>
               </div>
             </Form>
